@@ -2,6 +2,7 @@
 #define SPITFIRE_AST_H
 
 #include <stdlib.h>
+#include "lex.h"
 
 #define NEW(p)   ((p) = malloc(sizeof *(p)))
 
@@ -13,7 +14,8 @@ typedef enum stmttype{
 
 typedef enum exprtype {
     EXPR_INT = 0,
-    EXPR_IDENT
+    EXPR_IDENT,
+    EXPR_INFIX
 } ExprType;
 
 typedef struct expr {
@@ -25,6 +27,11 @@ typedef struct expr {
         struct {
             char *name;
         } id_expr;
+        struct {
+            Token tok;
+            struct expr *left;
+            struct expr *right;
+        } infix_expr;
     } *expr;
 } Expr;
 

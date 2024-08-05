@@ -40,11 +40,19 @@ void print_stmt(Stmt *s) {
         break;
     }
 
+    free(s->stmt);
     free(s);
 }
 
 void print_expr(Expr *e) {
     switch (e->type) {
+    case EXPR_INFIX:
+        printf("(infix ");
+        print_expr(e->expr->infix_expr.left);
+        printf(" %d ", e->expr->infix_expr.tok.type);
+        print_expr(e->expr->infix_expr.right);
+        printf(")");
+        break;
     case EXPR_INT:
         printf("%ld", e->expr->int_expr.value);
         break;
@@ -55,5 +63,6 @@ void print_expr(Expr *e) {
         break;
     }
     
+    free(e->expr);
     free(e);
 }
