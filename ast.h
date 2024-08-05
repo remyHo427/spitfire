@@ -31,9 +31,7 @@ typedef struct expr {
 typedef struct stmt {
     StmtType type;
     union {
-        struct {
-            Expr expr;
-        } expr_stmt;
+        Expr *expr;
     } *stmt;
 } Stmt;
 

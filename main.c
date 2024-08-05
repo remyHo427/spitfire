@@ -7,6 +7,7 @@
 #define INIT_BUF_SIZE   1048
 
 void print_stmt(Stmt *);
+void print_expr(Expr *);
 
 int main(void) {
     size_t buflen = INIT_BUF_SIZE;
@@ -31,12 +32,28 @@ void print_stmt(Stmt *s) {
         printf("(null)\n");
         break;
     case STMT_EXPR:
-        printf("(expr)");
+        printf("(expr ");
+        print_expr(s->stmt->expr);
+        printf(")\n");
         break;
     case STMT_EOF:
         break;
     }
 
     free(s);
-    s = NULL;
+}
+
+void print_expr(Expr *e) {
+    switch (e->type) {
+    case EXPR_INT:
+        printf("%ld", e->expr->int_expr.value);
+        break;
+    case EXPR_IDENT:
+        printf("%s", e->expr->id_expr.name);
+        break;
+    default:
+        break;
+    }
+    
+    free(e);
 }
