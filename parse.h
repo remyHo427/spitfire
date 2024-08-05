@@ -2,6 +2,7 @@
 #define SPITFIRE_PARSE_H
 
 #include "lex.h"
+#include "ast.h"
 
 typedef struct parser {
     Token curr;
@@ -9,6 +10,6 @@ typedef struct parser {
 } Parser;
 
 void parse_init(char *);
-void parse(void);
+Stmt *parse(void);
 
 #endif
