@@ -143,6 +143,8 @@ Expr *parsePrefix(void) {
         e->expr->int_expr.value = p.curr.val.i;
         return e;
     default:
+        free(e->expr);
+        free(e);
         return NULL;
     }
 }

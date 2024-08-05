@@ -1,6 +1,6 @@
 CC=gcc
 CCFLAG=-Wall -Wextra -Werror -O3 -pedantic -std=c99
-SRC=main.c lex.c parse.c ast.c
+SRC=main.c lex.c parse.c
 
 make: *.c
 	$(CC) $(CCFLAG) $(SRC) -o spitfire

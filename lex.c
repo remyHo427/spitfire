@@ -105,6 +105,22 @@ Token lex(void) {
         case ';':
             ADV();
             return tok(TOK_SCOLON);
+        case '>':
+            ADV();
+            if (SPEEK(c) == '=') {
+                ADV();
+                return tok(TOK_GEQ);
+            } else {
+                return tok(TOK_GT);
+            }
+        case '<':
+            ADV();
+            if (SPEEK(c) == '=') {
+                ADV();
+                return tok(TOK_LEQ);
+            } else {
+                return tok(TOK_LT);
+            }
         case '&':
             ADV();
             if (SPEEK(c) == '&') {

@@ -38,21 +38,28 @@ int main(void) {
         TOK_RETURN,
         TOK_WHILE,
         TOK_CONTINUE,
-        TOK_BREAK
+        TOK_BREAK,
+        TOK_LEQ,
+        TOK_LT,
+        TOK_GEQ,
+        TOK_GT
     };
     lex_init(
         "} { ) ( ] [ ! != == = + += - -= * *= / /= && || "
         " ; : ? ++ -- a 0 if else var func return "
-        "while continue break"
+        "while continue break <= < >= >"
     );
 
     Token tok;
     int i = 0;
-    while (i < 35 && (tok = lex()).type != TOK_EOF) {
+    while (i < 39 && (tok = lex()).type != TOK_EOF) {
         if (tok.type != seq[i]) {
             printf("%d failed, expect: %d, got: %d\n", i, seq[i], tok.type);
             break;
         }
         i++;
+    }
+    if (i != 39) {
+        printf("failed, stopped at %d\n", i);
     }
 }
