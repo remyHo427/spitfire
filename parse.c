@@ -51,11 +51,7 @@ Stmt* parse(void) {
         }
     }
 
-    NEW(s);
-    s->type = STMT_EOF;
-    s->stmt = NULL;
-
-    return s;
+    return ast_eof();
 }
 
 Stmt *parseStmt(void) {
@@ -67,17 +63,10 @@ Stmt *parseStmt(void) {
     }
 }
 Stmt *parseNullStmt(void) {
-    Stmt *s;
-    NEW(s);
-    
-    s->type = STMT_NULL;
-    s->stmt = NULL;
-
     adv();
-    return s;
+    return ast_null();
 }
 Stmt *parseExprStmt(void) {
-    Stmt *s;
     Expr *e;
 
     if ((e = parseExpr(LOWEST)) == NULL) {
@@ -90,11 +79,7 @@ Stmt *parseExprStmt(void) {
     }
     adv();
 
-    NEW(s);
-    NEW(s->stmt);
-    s->type = STMT_EXPR;
-    s->stmt->expr = e;
-    return s;    
+    return ast_expr(e);
 }
 
 Expr *parseExpr(Prec currPrec) {
@@ -148,7 +133,6 @@ Expr *parsePrefix(void) {
 
 Expr *parseInfix(Expr *left) {
     Prec currPrec;
-    Expr *e;
     Expr *right;
     Token tok;
 
@@ -160,14 +144,7 @@ Expr *parseInfix(Expr *left) {
         return NULL;
     }
 
-    NEW(e);
-    NEW(e->expr);
-    e->type = EXPR_INFIX;
-    e->expr->infix_expr.left = left;
-    e->expr->infix_expr.right = right;
-    e->expr->infix_expr.tok = tok;
-
-    return e;
+    return ast_infix(left, right, tok);
 }
 
 void adv(void) {

@@ -12,7 +12,7 @@ test_lex: lex.c tlex.c
 	$(CC) $(WFLAG) $(CCFLAG) -O0 -g lex.c tlex.c -o a.out
 	./a.out
 
-test_parse: parse.c tparse.c
+test_parse: dmem.c lex.c parse.c tparse.c ast.c
 	$(CC) $(WFLAG) $(CCFLAG) -O0 -DMEM_DEBUG_QUIET -g \
-		dmem.c lex.c parse.c tparse.c -o a.out
+		dmem.c lex.c parse.c tparse.c ast.c -o a.out
 	./a.out

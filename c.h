@@ -6,7 +6,6 @@
 #include <ctype.h>
 #include <string.h>
 #include <assert.h>
-#include <stdarg.h>
 
 #ifndef NDEBUG_MEM
     // dmem.c
@@ -128,7 +127,10 @@ typedef struct stmt {
     } *stmt;
 } Stmt;
 
-Expr *new_int_expr(long value);
+Stmt *ast_eof(void);
+Stmt *ast_null(void);
+Stmt *ast_expr(Expr *);
+Expr *ast_infix(Expr *, Expr *, Token);
 
 // parse.c
 typedef struct parser {
