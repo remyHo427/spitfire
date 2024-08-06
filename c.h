@@ -18,6 +18,9 @@
     int dmem_check(void);
 #endif
 
+// misc
+#define NEW(p)   ((p) = malloc(sizeof *(p)))
+
 // lex.c
 typedef enum toktype {
     TOK_EOF = 0,
@@ -88,8 +91,6 @@ void lex_init(char *src);
 Token lex(void);
 
 // ast.c
-#define NEW(p)   ((p) = malloc(sizeof *(p)))
-
 typedef enum stmttype{
     STMT_EOF = 0,
     STMT_NULL,
