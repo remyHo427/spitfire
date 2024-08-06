@@ -12,6 +12,7 @@ typedef struct ptr {
 static Ptr *head = NULL;
 static size_t memn = 0;
 static size_t debug_dmem_mem = 0;
+static size_t debug_list_len = 0;
 static Ptr *attach(Ptr *, Ptr *);
 
 // need to tell GCC to not raise unused parameter errors
@@ -40,6 +41,7 @@ static Ptr *attach(Ptr *, Ptr *);
     printf("%s:%ld %s() allocates %ld...\n", file, line, f, s);
 #endif
 
+    debug_list_len++;
     head = attach(head, ptr);
     memn += s;
 
@@ -72,7 +74,8 @@ static Ptr *attach(Ptr *head, Ptr *ptr) {
     ) {
 #pragma GCC diagnostic pop
 
-    Ptr *ptr = head;
+    Ptr *curr = head;
+    Ptr *prev = NULL;
 
     if (p == NULL) {
         fprintf(stderr, "tfree: freeing null pointer at %s:%ld %s()\n",
@@ -80,20 +83,30 @@ static Ptr *attach(Ptr *head, Ptr *ptr) {
         exit(1);
     }
 
-    while (ptr != NULL) {
-        if (ptr->p == p) {
+    while (curr != NULL) {
+        if (curr->p == p) {
 
 #ifndef MEM_DEBUG_QUIET
             printf("%s:%ld %s() frees %ld bytes...\n", 
-                file, line, f, ptr->size);
+                file, line, f, curr->size);
 #endif
 
-            memn -= ptr->size;
-            (free)(ptr->p);
-            ptr->p = NULL;
+            memn -= curr->size;
+            (free)(curr->p);
+            curr->p = NULL;
+
+            if (prev != NULL) {
+                prev->next = curr->next;
+                free(curr);
+                curr = NULL;
+                debug_dmem_mem -= sizeof (Ptr);
+                debug_list_len--;
+            }
+
             break;
         } else {
-            ptr = ptr->next;
+            prev = curr;
+            curr = curr->next;
         }
     }
 }
@@ -109,10 +122,12 @@ int dmem_check(void) {
             printf("non-NULL pointer allocated in %s() at %s:%ld\n",
                 curr->func, curr->file, curr->line);
         }
+        debug_list_len--;
         (free)(curr);
         curr = next;
     }
 
     assert(debug_dmem_mem == 0);
+    assert(debug_list_len == 0);
     return memn;
 }

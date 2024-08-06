@@ -127,21 +127,21 @@ Expr *parseExpr(Prec currPrec) {
 
 Expr *parsePrefix(void) {
     Expr *e;
-    NEW(e);
-    NEW(e->expr);
 
     switch (PEEK()) {
     case TOK_IDENT:
+        NEW(e);
+        NEW(e->expr);
         e->type = EXPR_IDENT;
         e->expr->id_expr.name = "id";
         return e;
     case TOK_INT:
+        NEW(e);
+        NEW(e->expr);
         e->type = EXPR_INT;
         e->expr->int_expr.value = p.curr.val.i;
         return e;
     default:
-        free(e->expr);
-        free(e);
         return NULL;
     }
 }
