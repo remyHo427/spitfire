@@ -19,12 +19,12 @@ static Ptr *attach(Ptr *, Ptr *);
 // when MEM_DEBUG_QUIET macro is defined
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
-    void *tmalloc(
-        size_t s, 
-        const char *file, 
-        unsigned long line, 
-        const char *f
-    ) {
+void *tmalloc(
+    size_t s, 
+    const char *file, 
+    unsigned long line, 
+    const char *f
+) {
 #pragma GCC diagnostic pop
 
     Ptr *ptr = (malloc)(sizeof (Ptr));
@@ -66,12 +66,12 @@ static Ptr *attach(Ptr *head, Ptr *ptr) {
 // ditto
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
-    void tfree(
-        void *p, 
-        const char *file, 
-        unsigned long line, 
-        const char *f
-    ) {
+void tfree(
+    void *p, 
+    const char *file, 
+    unsigned long line, 
+    const char *f
+) {
 #pragma GCC diagnostic pop
 
     Ptr *curr = head;
