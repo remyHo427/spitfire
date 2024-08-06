@@ -11,9 +11,11 @@ char *sprintf_expr(char *, Expr *);
 char *sprintf_stmt(char *, Stmt *);
 
 int main(void) {
-    char *s = print_ast(";");
+    char *s = print_ast("1;");
     printf("%s\n", s);
     free(s);
+
+    dmem_check();
     return 0;
 }
 
@@ -131,23 +133,30 @@ char *sprintf_expr(char *s, Expr *e) {
     case EXPR_IDENT:
         strncpy(s, "id", 2);
         s += 2;
-        return s;
+        break;
     case EXPR_INT:
         strncpy(s, "INT", 3);
         s += 3;
-        return s;
+        break;
     default:
-        return s;
+        break;
     }
+
+    free(e->expr);
+    free(e);
+    return s;
 }
-char *sprintf_stmt(char *s, Stmt *e) {
-    switch (e->type) {
+char *sprintf_stmt(char *s, Stmt *stmt) {
+    switch (stmt->type) {
     case STMT_NULL:
         strncpy(s, "(null)", 6);
         s += 6;
+        free(stmt);
         return s;
     case STMT_EXPR: {
-        s = sprintf_expr(s, e->stmt->expr);
+        s = sprintf_expr(s, stmt->stmt->expr);
+        free(stmt->stmt);
+        free(stmt);
         return s;
     }
     case STMT_EOF:
