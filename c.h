@@ -6,6 +6,7 @@
 #include <ctype.h>
 #include <string.h>
 #include <assert.h>
+#include <stdarg.h>
 
 #ifndef NDEBUG_MEM
     // dmem.c
