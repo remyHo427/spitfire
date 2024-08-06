@@ -192,7 +192,7 @@ Token lex(void) {
         case '#':
             do {
                 ADV();
-            } while (!IS_END() && SPEEK(c) != '\n');
+            } while (!IS_END() && PEEK(c) != '\n');
             continue;
         default:
             ADV();
