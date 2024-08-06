@@ -1,8 +1,4 @@
-#include <string.h>
-#include <ctype.h>
-#include "lex.h"
-
-#include <stdio.h>
+#include "c.h"
 
 #define ADV()       (l.sp++)
 #define IS_END()    (l.sp >= l.len)

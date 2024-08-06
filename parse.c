@@ -1,7 +1,4 @@
-#include <stdio.h>
-#include "lex.h"
-#include "parse.h"
-#include "ast.h"
+#include "c.h"
 
 #define IS(toktype) (p.curr.type == (toktype))
 #define PEEK()      (p.curr.type)

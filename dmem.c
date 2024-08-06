@@ -1,23 +1,29 @@
-#include "dmem.h"
-
-#define NEW         ((p) = malloc(sizeof *(p)))
+#include "c.h"
 
 typedef struct ptr {
     void *p;
     size_t size;
     struct ptr *next;
+    const char *file;
+    unsigned long line;
+    const char *func;
 } Ptr;
 
 static Ptr *head = NULL;
 static size_t memn = 0;
+static size_t debug_dmem_mem = 0;
 static Ptr *attach(Ptr *, Ptr *);
 
 void *tmalloc(size_t s, const char *file, unsigned long line, const char *f) {
     Ptr *ptr = (malloc)(sizeof (Ptr));
-
+    debug_dmem_mem += sizeof (Ptr);
+    
     ptr->p = (malloc)(s);
     ptr->size = s;
     ptr->next = NULL;
+    ptr->file = file;
+    ptr->func = f;
+    ptr->line = line;
 
 #ifndef MEM_DEBUG_QUIET
     printf("%s:%ld %s() allocates %ld...\n", file, line, f, s);
@@ -67,5 +73,20 @@ void tfree(void *p, const char *file, unsigned long line, const char *f) {
 }
 
 int dmem_check(void) {
+    Ptr *curr = head;
+    Ptr *next;
+
+    while (curr != NULL) {
+        debug_dmem_mem -= sizeof *(curr);
+        next = curr->next;
+        if (curr->p != NULL) {
+            printf("non-NULL pointer allocated in function %s() at %s:%ld\n",
+                curr->func, curr->file, curr->line);
+        }
+        (free)(curr);
+        curr = next;
+    }
+
+    assert(debug_dmem_mem == 0);
     return memn;
 }

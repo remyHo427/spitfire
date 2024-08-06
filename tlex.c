@@ -1,6 +1,4 @@
-#include <stdio.h>
-#include <assert.h>
-#include "lex.h"
+#include "c.h"
 
 int main(void) {
     Toktype seq[] = {
