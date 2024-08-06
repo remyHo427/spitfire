@@ -1,7 +1,7 @@
 #include "c.h"
 
 int main(void) {
-    parse_init(";");
+    parse_init("1 + 1;");
     parse();
 
     dmem_check();

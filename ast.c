@@ -40,3 +40,23 @@ Expr *ast_infix(Expr *left, Expr *right, Token tok) {
 
     return e;
 }
+Expr *ast_id(Token tok) {
+    Expr *e;
+    NEW(e);
+    NEW(e->expr);
+
+    e->type = EXPR_IDENT;
+    e->expr->id_expr.tok = tok;
+
+    return e;
+}
+Expr *ast_int(Token tok) {
+    Expr *e;
+    NEW(e);
+    NEW(e->expr);
+
+    e->type = EXPR_INT;
+    e->expr->int_expr.tok = tok;
+
+    return e;
+}

@@ -111,21 +111,11 @@ Expr *parseExpr(Prec currPrec) {
 }
 
 Expr *parsePrefix(void) {
-    Expr *e;
-
     switch (PEEK()) {
     case TOK_IDENT:
-        NEW(e);
-        NEW(e->expr);
-        e->type = EXPR_IDENT;
-        e->expr->id_expr.name = "id";
-        return e;
+        return ast_id(p.curr);
     case TOK_INT:
-        NEW(e);
-        NEW(e->expr);
-        e->type = EXPR_INT;
-        e->expr->int_expr.value = p.curr.val.i;
-        return e;
+        return ast_int(p.curr);
     default:
         return NULL;
     }

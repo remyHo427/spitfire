@@ -107,10 +107,10 @@ typedef struct expr {
     ExprType type;
     union {
         struct {
-            long value;
+            Token tok;
         } int_expr;
         struct {
-            char *name;
+            Token tok;
         } id_expr;
         struct {
             Token tok;
@@ -131,6 +131,8 @@ Stmt *ast_eof(void);
 Stmt *ast_null(void);
 Stmt *ast_expr(Expr *);
 Expr *ast_infix(Expr *, Expr *, Token);
+Expr *ast_id(Token);
+Expr *ast_int(Token);
 
 // parse.c
 typedef struct parser {
