@@ -53,7 +53,11 @@ Stmt* parse(void) {
         }
     }
 
-    return ast_eof();
+    NEW(s, a);
+    s->type = STMT_EOF;
+    s->stmt = NULL;
+
+    return s;
 }
 
 Stmt *parseStmt(void) {
@@ -65,10 +69,17 @@ Stmt *parseStmt(void) {
     }
 }
 Stmt *parseNullStmt(void) {
+    Stmt *s;
+    NEW(s, a);
+    
+    s->type = STMT_NULL;
+    s->stmt = NULL;
+
     adv();
-    return ast_null();
+    return s;
 }
 Stmt *parseExprStmt(void) {
+    Stmt *s;
     Expr *e;
 
     if ((e = parseExpr(LOWEST)) == NULL) {
@@ -81,7 +92,12 @@ Stmt *parseExprStmt(void) {
     }
     adv();
 
-    return ast_expr(e);
+    NEW(s, a);
+    NEW(s->stmt, a);
+    s->type = STMT_EXPR;
+    s->stmt->expr = e;
+
+    return s;
 }
 
 Expr *parseExpr(Prec currPrec) {
@@ -113,20 +129,30 @@ Expr *parseExpr(Prec currPrec) {
 }
 
 Expr *parsePrefix(void) {
+    Expr *e;
     switch (PEEK()) {
     case TOK_IDENT:
-        return ast_id(p.curr);
+        NEW(e, a);
+        NEW(e->expr, a);
+        e->type = EXPR_IDENT;
+        e->expr->id_expr.tok = p.curr;
+        return e;
     case TOK_INT:
-        return ast_int(p.curr);
+        NEW(e, a);
+        NEW(e->expr, a);
+        e->type = EXPR_INT;
+        e->expr->id_expr.tok = p.curr;
+        return e;
     default:
         return NULL;
     }
 }
 
 Expr *parseInfix(Expr *left) {
-    Prec currPrec;
+    Expr *e;
     Expr *right;
     Token tok;
+    Prec currPrec;
 
     tok = p.curr;
     currPrec = prec(tok.type);
@@ -136,7 +162,14 @@ Expr *parseInfix(Expr *left) {
         return NULL;
     }
 
-    return ast_infix(left, right, tok);
+    NEW(e, a);
+    NEW(e->expr, a);
+    e->type = EXPR_INFIX;
+    e->expr->infix_expr.left = left;
+    e->expr->infix_expr.right = right;
+    e->expr->infix_expr.tok = tok;
+
+    return e;
 }
 
 void adv(void) {

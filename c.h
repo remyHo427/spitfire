@@ -19,7 +19,7 @@
 #endif
 
 // arena.c
-#define NEW(p)      ((p) = malloc(sizeof *(p)))
+#define NEW(p, a)   ((p) = arena_alloc(sizeof *(p), (a)))
 
 typedef struct arena {
     char         *pool;
@@ -138,13 +138,6 @@ typedef struct stmt {
         Expr *expr;
     } *stmt;
 } Stmt;
-
-Stmt *ast_eof(void);
-Stmt *ast_null(void);
-Stmt *ast_expr(Expr *);
-Expr *ast_infix(Expr *, Expr *, Token);
-Expr *ast_id(Token);
-Expr *ast_int(Token);
 
 // parse.c
 typedef struct parser {

@@ -11,7 +11,7 @@ Arena *arena_new(void) {
     if ((a = pop_free_list()) != NULL) {
         return a;
     } else {
-        NEW(a);
+        a = malloc(sizeof *(a));
         
         a->pool = malloc(BLOCK_SIZE);
         a->curr = 0;
