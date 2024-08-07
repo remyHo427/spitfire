@@ -152,7 +152,7 @@ typedef struct parser {
     Token next;
 } Parser;
 
-void parse_init(char *);
+void parse_init(char *, Arena *);
 Stmt *parse(void);
 
 #endif

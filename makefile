@@ -2,17 +2,12 @@ CC=gcc
 WFLAG=-Wall -Wextra -Werror
 NDFLAG=-DNDEBUG_MEM -DNDEBUG
 CCFLAG=-pedantic -std=c99
-SRC=main.c lex.c parse.c ast.c arena.c
+SRC=arena.c ast.c lex.c main.c parse.c
 
 make: *.c
-	$(CC) $(CCFLAG) $(WFLAG) $(SRC) $(NDFLAG) -O3 -o spitfire
+	$(CC) $(CCFLAG) $(NDFLAG) $(SRC) -O3 -o spitfire
 	./spitfire
 
-test_lex: lex.c tlex.c
-	$(CC) $(WFLAG) $(CCFLAG) -O0 -g lex.c tlex.c -o a.out
-	./a.out
-
-test_parse: dmem.c lex.c parse.c tparse.c ast.c
-	$(CC) $(WFLAG) $(CCFLAG) -O0 -DMEM_DEBUG_QUIET -g \
-		dmem.c lex.c parse.c tparse.c ast.c -o a.out
-	./a.out
+run: *.c
+	$(CC) $(CCFLAG) $(WFLAG) -DMEM_DEBUG_QUIET *.c -O0 -g -o spitfire
+	./spitfire

@@ -19,6 +19,7 @@ typedef enum prec_enum {
 } Prec;
 
 static Parser p;
+static Arena *a;
 
 Stmt *parseStmt(void);
 Stmt *parseNullStmt(void);
@@ -31,10 +32,11 @@ void adv(void);
 int expect(Toktype);
 Prec prec(Toktype);
 
-void parse_init(char *s) {
+void parse_init(char *s, Arena *arena) {
     lex_init(s);
     adv();
     adv();
+    a = arena;
 }
 
 Stmt* parse(void) {
