@@ -18,8 +18,20 @@
     int dmem_check(void);
 #endif
 
-// misc
-#define NEW(p)   ((p) = malloc(sizeof *(p)))
+// arena.c
+#define NEW(p)      ((p) = malloc(sizeof *(p)))
+
+typedef struct arena {
+    char         *pool;
+    struct arena *next;
+    size_t        curr;
+    size_t        max;
+} Arena;
+
+Arena *arena_new(void);
+void   arena_free(Arena **);
+void   arena_dispose(void);
+void  *arena_alloc(size_t, Arena *);
 
 // lex.c
 typedef enum toktype {

@@ -2,7 +2,7 @@ CC=gcc
 WFLAG=-Wall -Wextra -Werror
 NDFLAG=-DNDEBUG_MEM -DNDEBUG
 CCFLAG=-pedantic -std=c99
-SRC=main.c lex.c parse.c
+SRC=main.c lex.c parse.c ast.c arena.c
 
 make: *.c
 	$(CC) $(CCFLAG) $(WFLAG) $(SRC) $(NDFLAG) -O3 -o spitfire
