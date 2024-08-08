@@ -1,5 +1,5 @@
 #include "c.h"
-#define BLOCK_SIZE  10240
+#define BLOCK_SIZE 262144
 
 static Arena *free_list = NULL;
 

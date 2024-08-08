@@ -1,4 +1,4 @@
-#define _GNU_SOURCE
+#include <time.h>
 #include "c.h"
 
 #define INIT_BUF_SIZE   2048
@@ -7,20 +7,43 @@ void print_stmt(Stmt *);
 void print_expr(Expr *);
 
 int main(void) {
-    Arena *arena = arena_new();
-    char *l = malloc(INIT_BUF_SIZE);
-    size_t buflen = INIT_BUF_SIZE;
+    size_t len;
+    FILE* f;
+    char* buf;
 
-    fputs("> ", stdout);
-    while (getline(&l, &buflen, stdin) != -1) {
-        parse_init(l, arena);
-        print_stmt(parse());
-        fputs("> ", stdout);
+    if ((f = fopen("test.txt", "r")) == NULL) {
+        fprintf(stderr, "file not found\n");
+        return 1;
     }
 
-    arena_free(&arena);
+    fseek(f, 0, SEEK_END);
+    len = ftell(f);
+    fseek(f, 0, SEEK_SET);
+    buf = (char *)malloc(sizeof (char) * (len + 1));
+    fread(buf, 1, len, f);
+    fclose(f);
+    buf[len] = '\0';
+
+    clock_t start = clock();
+    Arena *a;
+    Stmt *s;
+
+    parse_init(buf);
+    while (1) {
+        a = arena_new();
+        s = parse(a);
+        if ((s = parse(a))->type == STMT_EOF) {
+            arena_free(&a);
+            break;
+        }
+        arena_free(&a);
+    }
+    clock_t end = clock();
+
+    printf("time: %f\n", (double)(end - start) / CLOCKS_PER_SEC));
+
     arena_dispose();
-    free(l);
+    free(buf);
 #ifndef NDEBUG_MEM
     return dmem_check() > 0;
 #else
@@ -34,7 +57,7 @@ void print_stmt(Stmt *s) {
         printf("(null)\n");
         break;
     case STMT_EXPR:
-        print_expr(s->stmt->expr);
+        print_expr(s->expr);
         fputs("\n", stdout);
         break;
     case STMT_EOF:
@@ -46,13 +69,13 @@ void print_expr(Expr *e) {
     switch (e->type) {
     case EXPR_INFIX:
         printf("(");
-        print_expr(e->expr->infix_expr.left);
-        printf(" %d ", e->expr->infix_expr.tok.type);
-        print_expr(e->expr->infix_expr.right);
+        print_expr(e->left);
+        printf(" %d ", e->tok.type);
+        print_expr(e->right);
         printf(")");
         break;
     case EXPR_INT:
-        printf("%ld", e->expr->int_expr.tok.val.i);
+        printf("%ld", e->tok.val.i);
         break;
     case EXPR_IDENT:
         printf("id");

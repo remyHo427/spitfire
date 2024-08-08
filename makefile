@@ -9,5 +9,5 @@ make: *.c
 	./spitfire
 
 run: *.c
-	$(CC) $(CCFLAG) $(WFLAG) -DMEM_DEBUG_QUIET *.c -O0 -g -o spitfire
+	$(CC) $(CCFLAG) $(WFLAG) *.c -O0 -g -o spitfire
 	./spitfire

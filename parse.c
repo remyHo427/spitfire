@@ -32,16 +32,16 @@ void adv(void);
 int expect(Toktype);
 Prec prec(Toktype);
 
-void parse_init(char *s, Arena *arena) {
+void parse_init(char *s) {
     lex_init(s);
     adv();
     adv();
-    a = arena;
 }
 
-Stmt* parse(void) {
+Stmt* parse(Arena *arena) {
     Stmt *s;
 
+    a = arena;
     while (!IS(TOK_EOF)) {
         if ((s = parseStmt()) == NULL) {
             while (!IS(TOK_SCOLON) && !IS(TOK_EOF)) {
@@ -55,7 +55,6 @@ Stmt* parse(void) {
 
     NEW(s, a);
     s->type = STMT_EOF;
-    s->stmt = NULL;
 
     return s;
 }
@@ -73,7 +72,6 @@ Stmt *parseNullStmt(void) {
     NEW(s, a);
     
     s->type = STMT_NULL;
-    s->stmt = NULL;
 
     adv();
     return s;
@@ -93,9 +91,8 @@ Stmt *parseExprStmt(void) {
     adv();
 
     NEW(s, a);
-    NEW(s->stmt, a);
     s->type = STMT_EXPR;
-    s->stmt->expr = e;
+    s->expr = e;
 
     return s;
 }
@@ -133,15 +130,13 @@ Expr *parsePrefix(void) {
     switch (PEEK()) {
     case TOK_IDENT:
         NEW(e, a);
-        NEW(e->expr, a);
         e->type = EXPR_IDENT;
-        e->expr->id_expr.tok = p.curr;
+        e->tok = p.curr;
         return e;
     case TOK_INT:
         NEW(e, a);
-        NEW(e->expr, a);
         e->type = EXPR_INT;
-        e->expr->id_expr.tok = p.curr;
+        e->tok = p.curr;
         return e;
     default:
         return NULL;
@@ -163,11 +158,10 @@ Expr *parseInfix(Expr *left) {
     }
 
     NEW(e, a);
-    NEW(e->expr, a);
     e->type = EXPR_INFIX;
-    e->expr->infix_expr.left = left;
-    e->expr->infix_expr.right = right;
-    e->expr->infix_expr.tok = tok;
+    e->left = left;
+    e->right = right;
+    e->tok = tok;
 
     return e;
 }

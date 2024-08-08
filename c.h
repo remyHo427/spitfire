@@ -117,26 +117,14 @@ typedef enum exprtype {
 
 typedef struct expr {
     ExprType type;
-    union {
-        struct {
-            Token tok;
-        } int_expr;
-        struct {
-            Token tok;
-        } id_expr;
-        struct {
-            Token tok;
-            struct expr *left;
-            struct expr *right;
-        } infix_expr;
-    } *expr;
+    Token tok;
+    struct expr *left;
+    struct expr *right;
 } Expr;
 
 typedef struct stmt {
     StmtType type;
-    union {
-        Expr *expr;
-    } *stmt;
+    Expr *expr;
 } Stmt;
 
 // parse.c
@@ -145,7 +133,7 @@ typedef struct parser {
     Token next;
 } Parser;
 
-void parse_init(char *, Arena *);
-Stmt *parse(void);
+void parse_init(char *);
+Stmt *parse(Arena *);
 
 #endif
