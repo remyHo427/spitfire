@@ -6,20 +6,19 @@ static Arena *free_list = NULL;
 Arena *pop_free_list(void);
 
 Arena *arena_new(void) {
-    Arena *a;
+    Arena *a = pop_free_list();
 
-    if ((a = pop_free_list()) != NULL) {
-        return a;
-    } else {
-        a = malloc(sizeof *(a));
-        
-        a->pool = malloc(BLOCK_SIZE);
-        a->curr = 0;
-        a->max = BLOCK_SIZE;
-        a->next = NULL;
-
+    if (a != NULL) {
         return a;
     }
+
+    a = malloc(sizeof *(a));
+    a->pool = malloc(BLOCK_SIZE);
+    a->curr = 0;
+    a->max = BLOCK_SIZE;
+    a->next = NULL;
+    
+    return a;
 }
 
 void arena_free(Arena **ap) {
@@ -70,19 +69,11 @@ void *arena_alloc(size_t size, Arena *a) {
         curr = curr->next;
     }
 
-    if ((curr = pop_free_list()) != NULL) {
-        prev->next = curr;
-        avail = curr->curr = 0;
-        curr->curr += size;
-        
-        return curr->pool + avail;
-    } else {
-        prev->next = curr = arena_new();
-        avail = curr->curr;
-        curr->curr += size;
+    prev->next = curr = arena_new();
+    avail = curr->curr = 0;
+    curr->curr += size;
 
-        return curr->pool + avail;
-    }
+    return curr->pool + avail;
 }
 
 Arena *pop_free_list(void) {

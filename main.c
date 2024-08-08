@@ -8,7 +8,7 @@ void print_expr(Expr *);
 
 int main(void) {
     Arena *arena = arena_new();
-    char *l = arena_alloc(INIT_BUF_SIZE, arena);
+    char *l = malloc(INIT_BUF_SIZE);
     size_t buflen = INIT_BUF_SIZE;
 
     fputs("> ", stdout);
@@ -19,6 +19,8 @@ int main(void) {
     }
 
     arena_free(&arena);
+    arena_dispose();
+    free(l);
 #ifndef NDEBUG_MEM
     return dmem_check() > 0;
 #else
@@ -43,7 +45,7 @@ void print_stmt(Stmt *s) {
 void print_expr(Expr *e) {
     switch (e->type) {
     case EXPR_INFIX:
-        printf("(infix ");
+        printf("(");
         print_expr(e->expr->infix_expr.left);
         printf(" %d ", e->expr->infix_expr.tok.type);
         print_expr(e->expr->infix_expr.right);
